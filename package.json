@@ -1,0 +1,9 @@
+{
+  "name": "assignment-submission-portal",
+  "version": "1.0.0",
+  "description": "Assignment Submission Portal (HTML, CSS, JS) with automated tests",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

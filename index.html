@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Submission Portal</title>
+  <meta name="description" content="Submit assignment links and see all saved submissions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top"><span class="logo">&#128209;</span> AssignHub</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">&#9776;</button>
+      <nav id="nav" class="nav">
+        <a href="#submit">Submit</a>
+        <a href="#submissions">Submissions</a>
+        <a href="#how">How it works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <p class="eyebrow">CSC418 &middot; DevOps Lab Midterm</p>
+          <h1>Assignment Submission Portal</h1>
+          <p class="lead">Share your assignment link in seconds. Every code change is tested automatically, so submissions never break.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#submit">Submit assignment</a>
+            <a class="btn btn-ghost" href="#submissions">View submissions</a>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Submissions</span></div>
+          <div class="stat"><span class="stat-num" id="statStudents">0</span><span class="stat-label">Students</span></div>
+          <div class="stat"><span class="stat-num">3</span><span class="stat-label">Automated tests</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="submit" class="section">
+      <div class="container narrow">
+        <h2>Submit your assignment</h2>
+        <p class="muted">All fields are required. The URL must start with http:// or https://</p>
+
+        <div id="feedback" class="feedback" role="alert" hidden></div>
+
+        <form id="form" class="card form" novalidate>
+          <div class="field">
+            <label for="name">Student name</label>
+            <input id="name" name="name" type="text" placeholder="e.g. Ali Khan" autocomplete="name">
+            <small class="err" data-for="name"></small>
+          </div>
+          <div class="field">
+            <label for="reg_no">Registration number</label>
+            <input id="reg_no" name="reg_no" type="text" placeholder="e.g. FA22-BCS-001">
+            <small class="err" data-for="reg_no"></small>
+          </div>
+          <div class="field">
+            <label for="title">Assignment title</label>
+            <input id="title" name="title" type="text" placeholder="e.g. DevOps Assignment 1">
+            <small class="err" data-for="title"></small>
+          </div>
+          <div class="field">
+            <label for="url">Submission URL</label>
+            <input id="url" name="url" type="url" placeholder="https://github.com/you/assignment">
+            <small class="err" data-for="url"></small>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Submit</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="submissions" class="section alt">
+      <div class="container">
+        <div class="list-head">
+          <h2>Saved submissions</h2>
+          <input id="search" class="search" type="search" placeholder="Search name, reg. no. or title...">
+        </div>
+        <p id="empty" class="muted empty">No submissions yet. Be the first to submit!</p>
+        <div id="list" class="grid"></div>
+      </div>
+    </section>
+
+    <section id="how" class="section">
+      <div class="container">
+        <h2>How it works</h2>
+        <div class="steps">
+          <div class="card step"><span class="step-no">1</span><h3>Push code</h3><p class="muted">Every push to GitHub starts the CI pipeline.</p></div>
+          <div class="card step"><span class="step-no">2</span><h3>Auto tests</h3><p class="muted">Three tests check valid, missing and invalid submissions.</p></div>
+          <div class="card step"><span class="step-no">3</span><h3>JSON report</h3><p class="muted">Results are sent to a local receiver as <code>test-report.json</code>.</p></div>
+          <div class="card step"><span class="step-no">4</span><h3>Deploy</h3><p class="muted">If all tests pass on main, the site is published to GitHub Pages.</p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; <span id="year"></span> Assignment Submission Portal &middot; Built for CSC418 DevOps</div>
+  </footer>
+
+  <script src="portal.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

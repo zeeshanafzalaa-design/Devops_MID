@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MAIL_USER: ${{ secrets.MAIL_USER }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # A failing test makes this step (and the whole job) fail.
+      # Results are written to the console and to report.xml.
+      - name: Run automated tests
+        run: >
+          node --test
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=junit --test-reporter-destination=report.xml
+
+      # Runs for BOTH passing and failing test runs (if: always()).
+      - name: Send test report to local receiver
+        if: always()
+        env:
+          REPORT_URL: ${{ secrets.REPORT_URL }}
+          RECEIVER_TOKEN: ${{ secrets.RECEIVER_TOKEN }}
+        run: python ci/send_report.py report.xml
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: |
+            report.xml
+            report-ci.json
+
+      # ---------- BONUS: email the report (pass or fail) ----------
+      - name: Email test report
+        if: always() && env.MAIL_USER != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USER }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: DevOps CI <${{ secrets.MAIL_USER }}>
+          subject: "CI ${{ job.status }}: ${{ github.repository }} @ ${{ github.sha }}"
+          body: |
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Overall result: ${{ job.status }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            The full JSON report (totals and per-test results) is attached.
+          attachments: report-ci.json
+
+  # ---------- BONUS: deploy to GitHub Pages only if tests pass on main ----------
+  deploy:
+    needs: test            # skipped automatically if the test job fails
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Collect website files
+        run: |
+          mkdir _site
+          cp index.html style.css script.js portal.js _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
