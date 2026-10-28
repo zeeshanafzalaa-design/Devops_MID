@@ -58,7 +58,7 @@ def main():
     report = build_report(xml_path)
     with open("report-ci.json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2)
-    headers = {"Content-Type": "application/json", "ngrok-skip-browser-warning": "1"}
+    headers = {"Content-Type": "application/json", "ngrok-skip-browser-warning": "1", "bypass-tunnel-reminder": "1"}
     if os.environ.get("RECEIVER_TOKEN"):
         headers["X-Token"] = os.environ["RECEIVER_TOKEN"]
     req = urllib.request.Request(url, data=json.dumps(report).encode(), headers=headers, method="POST")
