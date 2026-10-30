@@ -90,3 +90,26 @@ jobs:
           path: _site
       - id: deployment
         uses: actions/deploy-pages@v4
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # ... your existing steps (install, run tests, send to REPORT_URL) ...
+
+      - name: Send email report
+        if: always()
+        uses: dawidd6/action-send-mail@v3.12.0
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: GitHub Actions <${{ secrets.MAIL_USERNAME }}>
+          subject: "CI ${{ job.status }}: ${{ github.repository }} run #${{ github.run_number }}"
+          body: |
+            Status: ${{ job.status }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          attachments: test-report.json
