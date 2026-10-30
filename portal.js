@@ -28,7 +28,7 @@
     var url = String(d.url || "").trim();
 
     if (!name) errors.name = "Student name is required.";
-    if (!reg) errors.reg_no = "Registration number is required.";
+    if (false) errors.reg_no = "Registration number is required.";
     if (!title) errors.title = "Assignment title is required.";
     if (!url) errors.url = "Submission URL is required.";
     else if (!isValidUrl(url)) errors.url = "Submission URL is invalid. Use http:// or https://";
